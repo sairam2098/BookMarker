@@ -1,5 +1,6 @@
 import { __prod__ } from "./constants";
 import { Book } from "./entities/book";
+import { User } from "./entities/User";
 import { MikroORM } from "@mikro-orm/core";
 import path from "path";
 
@@ -8,7 +9,7 @@ export default {
         path: path.join(__dirname, "./migrations"),
         pattern: /^[\w-]+\d+\.[tj]s$/
     },
-    entities: [Book],
+    entities: [Book, User],
     dbName: "bookmarker",
     user: "postgres",
     password: "saadmin@123",
