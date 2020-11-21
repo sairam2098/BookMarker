@@ -1,16 +1,28 @@
 import { MikroORM } from "@mikro-orm/core";
 import { __prod__ } from "./constants";
-import { Book } from "./entities/book";
 import microConfig from "./mikro-orm.config";
+import express from "express";
+import { ApolloServer } from "apollo-server-express";
+import { buildSchema } from "type-graphql";
+import { HelloResolver } from "./resolvers/hello";
 
 const main = async () => {
     const orm = await MikroORM.init(microConfig);
     await orm.getMigrator().up();
-    // const book = orm.em.create(Book, {title: 'The Alchemist'});
-    // await orm.em.persistAndFlush(book);
+    const app = express();
 
-    const books = await orm.em.find(Book, {});
-    console.log(books);
+    const apolloServer = new ApolloServer({
+        schema: await buildSchema({
+            resolvers: [HelloResolver],
+            validate: false
+        })
+    });
+
+    apolloServer.applyMiddleware({ app });
+
+    app.listen(4000, () => {
+        console.log("server listning on port 4000")
+    });
 }
 
 main().catch(err => {
